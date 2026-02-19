@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:food_app/models/order.dart';
 import 'package:food_app/models/food.dart';
 
 class OrderProvider extends ChangeNotifier {
-  final List<Map<String, dynamic>> _orders = [];
+  final List<Order> _orders = [];
 
-  List<Map<String, dynamic>> get orders => _orders;
+  List<Order> get orders => _orders;
 
-  void addOrder(List<Food> items, double total) {
-    _orders.insert(0, {
-      "id": DateTime.now().millisecondsSinceEpoch.toString(),
-      "date": DateTime.now().toString().substring(0, 16),
-      "total": total,
-      "items": items.map((f) => {
-        "name": f.name,
-        "price": f.price,
-        "qty": 1,
-      }).toList(),
-    });
+  void addOrder(List<Food> items, double total, {String status = "Pending"}) {
+    _orders.insert(0, Order(items: items, total: total, status: status));
+    notifyListeners();
+  }
 
+  void updateOrderStatus(int index, String status) {
+    _orders[index].status = status;
     notifyListeners();
   }
 }
