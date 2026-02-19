@@ -24,19 +24,20 @@ class KqrPaymentScreen extends StatelessWidget {
             Text(
               "Total: \$${amount.toStringAsFixed(2)}",
               style: const TextStyle(
-                  fontSize: 22, fontWeight: FontWeight.bold, color: Colors.red),
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.red,
+              ),
             ),
             const SizedBox(height: 20),
             Card(
               elevation: 5,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16)),
+                borderRadius: BorderRadius.circular(16),
+              ),
               child: Padding(
                 padding: const EdgeInsets.all(12),
-                child: Image.asset(
-                  "assets/images/khqr/khqr.jpg",
-                  height: 260,
-                ),
+                child: Image.asset("assets/images/khqr/khqr.jpg", height: 260),
               ),
             ),
             const SizedBox(height: 20),
@@ -47,34 +48,38 @@ class KqrPaymentScreen extends StatelessWidget {
             const Spacer(),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  minimumSize: const Size(double.infinity, 50)),
+                backgroundColor: Colors.red,
+                minimumSize: const Size(double.infinity, 50),
+              ),
               onPressed: () {
                 context.read<OrderProvider>().addOrder(
-                    cart.items.map((e) => e.food).toList(), amount);
+                  cart.items.map((e) => e.food).toList(),
+                  amount,
+                );
                 cart.clearCart();
                 showDialog(
-                    context: context,
-                    builder: (_) => AlertDialog(
-                          title: const Text("Payment Successful 🎉"),
-                          content: const Text("Your order has been placed."),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                                Navigator.pop(context);
-                                Navigator.pop(context);
-                              },
-                              child: const Text("OK"),
-                            )
-                          ],
-                        ));
+                  context: context,
+                  builder: (_) => AlertDialog(
+                    title: const Text("Payment Successful 🎉"),
+                    content: const Text("Your order has been placed."),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        },
+                        child: const Text("OK"),
+                      ),
+                    ],
+                  ),
+                );
               },
               child: const Text(
                 "I have paid",
                 style: TextStyle(color: Colors.white, fontSize: 18),
               ),
-            )
+            ),
           ],
         ),
       ),

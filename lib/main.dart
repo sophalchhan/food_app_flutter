@@ -14,9 +14,14 @@ void main() {
   runApp(const FoodApp());
 }
 
-class FoodApp extends StatelessWidget {
+class FoodApp extends StatefulWidget {
   const FoodApp({super.key});
 
+  @override
+  State<FoodApp> createState() => _FoodAppState();
+}
+
+class _FoodAppState extends State<FoodApp> {
   Future<bool> checkLogin() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool("isLoggedIn") ?? false;

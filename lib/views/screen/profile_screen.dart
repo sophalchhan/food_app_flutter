@@ -1,6 +1,7 @@
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:food_app/views/screen/history_screen.dart';
+import 'package:food_app/views/screen/OrderHistoryScreen.dart';
 import 'package:food_app/views/screen/login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -11,7 +12,6 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-
   String userName = "User";
   String email = "No Email";
 
@@ -23,19 +23,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> loadUser() async {
     final prefs = await SharedPreferences.getInstance();
+
     setState(() {
       userName = prefs.getString("userName") ?? "User";
       email = prefs.getString("userEmail") ?? "No Email";
     });
   }
 
-  Future<void> logout() async {
+  Future<void> logout(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
+
+    /// Clear login state
+    await prefs.setBool("isLoggedIn", false);
 
     if (!mounted) return;
 
-    Navigator.of(context).pushAndRemoveUntil(
+    Navigator.pushAndRemoveUntil(
+      context,
       MaterialPageRoute(builder: (_) => const LoginScreen()),
       (route) => false,
     );
@@ -45,15 +49,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("My Profile",
-            style: TextStyle(color: Colors.white)),
+        title: const Text(
+          "My Profile",
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Colors.red,
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-
-            // ===== PROFILE HEADER =====
+            /// ===== HEADER =====
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 30),
@@ -63,8 +68,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const CircleAvatar(
                     radius: 50,
                     backgroundColor: Colors.white,
-                    child: Icon(Icons.person,
-                        size: 60, color: Colors.red),
+                    child: Icon(Icons.person, size: 60, color: Colors.red),
                   ),
                   const SizedBox(height: 10),
                   Text(
@@ -79,7 +83,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Text(
                     email,
                     style: const TextStyle(
-                        color: Colors.white70, fontSize: 16),
+                      color: Colors.white70,
+                      fontSize: 16,
+                    ),
                   ),
                 ],
               ),
@@ -91,59 +97,51 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 children: [
+                  _profileCard(Icons.phone, "Phone", "+855 96 680 9340"),
+                  _profileCard(
+                    Icons.location_on,
+                    "Address",
+                    "Phnom Penh, Cambodia",
+                  ),
+                  _profileCard(Icons.payment, "Payment", "Visa **** 1234"),
 
-                  _profileCard(Icons.phone, "Phone",
-                      "+855 96 680 9340"),
-
-                  _profileCard(Icons.location_on,
-                      "Address", "Phnom Penh, Cambodia"),
-
-                  _profileCard(Icons.payment,
-                      "Payment", "Visa **** 1234"),
-
+                  /// ===== ORDER HISTORY =====
                   Card(
-                    margin:
-                        const EdgeInsets.symmetric(vertical: 8),
+                    margin: const EdgeInsets.symmetric(vertical: 8),
                     child: ListTile(
-                      leading:
-                          const Icon(Icons.history),
+                      leading: const Icon(Icons.history),
                       title: const Text(
                         "Order History",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold),
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      trailing: const Icon(
-                          Icons.arrow_forward_ios,
-                          size: 16),
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) =>
-                                const HistoryScreen(),
+                            builder: (_) => const OrderHistoryScreen(),
                           ),
                         );
                       },
                     ),
                   ),
 
-                  _profileCard(Icons.lock,
-                      "Change Password", ""),
+                  _profileCard(Icons.lock, "Change Password", ""),
 
-                  Card(
-                    margin:
-                        const EdgeInsets.symmetric(vertical: 8),
-                    child: ListTile(
-                      leading: const Icon(Icons.logout,
-                          color: Colors.red),
-                      title: const Text(
-                        "Logout",
-                        style: TextStyle(
-                            color: Colors.red,
-                            fontWeight:
-                                FontWeight.bold),
+                  const SizedBox(height: 20),
+
+                  /// ===== LOGOUT =====
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
                       ),
-                      onTap: logout,
+                      onPressed: () => logout(context),
+                      child: const Text(
+                        "Logout",
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                 ],
@@ -155,25 +153,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _profileCard(
-    IconData icon,
-    String title,
-    String subtitle,
-  ) {
+  Widget _profileCard(IconData icon, String title, String subtitle) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: ListTile(
         leading: Icon(icon),
         title: Text(
           title,
-          style: const TextStyle(
-              fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        subtitle:
-            subtitle.isNotEmpty ? Text(subtitle) : null,
-        trailing: const Icon(
-            Icons.arrow_forward_ios,
-            size: 16),
+        subtitle: subtitle.isNotEmpty ? Text(subtitle) : null,
+        trailing: const Icon(Icons.arrow_forward_ios, size: 16),
         onTap: () {},
       ),
     );

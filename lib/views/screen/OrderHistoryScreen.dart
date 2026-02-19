@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:food_app/providers/order_provider.dart';
 import 'package:intl/intl.dart';
 
-
 class OrderHistoryScreen extends StatelessWidget {
   const OrderHistoryScreen({super.key});
 

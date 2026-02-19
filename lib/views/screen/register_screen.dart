@@ -20,28 +20,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool obscurePassword = true;
   bool obscureConfirmPassword = true;
 
-  Future<void> register() async {
-    if (!_formKey.currentState!.validate()) return;
 
-    final prefs = await SharedPreferences.getInstance();
+Future<void> register() async {
+  if (!_formKey.currentState!.validate()) return;
 
-    await prefs.setString("name", nameController.text.trim());
-    await prefs.setString("email", emailController.text.trim());
-    await prefs.setString("password", passwordController.text.trim());
+  final prefs = await SharedPreferences.getInstance();
 
-    if (!mounted) return;
+  /// Save user info
+  await prefs.setString("userName", nameController.text.trim());
+  await prefs.setString("userEmail", emailController.text.trim());
+  await prefs.setString("password", passwordController.text.trim());
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Registration Successful ✅"),
-        backgroundColor: Colors.green,
-      ),
-    );
+  /// Auto login
+  await prefs.setBool("isLoggedIn", true);
 
-    Future.delayed(const Duration(seconds: 1), () {
-      Navigator.pop(context);
-    });
-  }
+  if (!mounted) return;
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(content: Text("Registration Successful ✅")),
+  );
+
+  Navigator.pop(context);
+}
+
 
   @override
   Widget build(BuildContext context) {
